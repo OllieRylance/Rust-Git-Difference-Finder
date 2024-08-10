@@ -1,5 +1,47 @@
 use crate::read_file_lines;
 
+
+#[derive(Debug, PartialEq)]
+enum DiffType {
+    Addition,
+    Deletion,
+    Modification,
+}
+
+#[derive(Debug)]
+struct LineChange {
+    line_number: usize,
+    content: String,
+}
+
+#[derive(Debug)]
+struct DiffChunk {
+    diff_type: DiffType,
+    old_line_number: Option<usize>, // None if the change is an addition
+    new_line_number: Option<usize>, // None if the change is a deletion
+    changes: Vec<LineChange>,
+}
+
+#[derive(Debug)]
+struct FileDiff {
+    file_name: String,
+    chunks: Vec<DiffChunk>,
+}
+
+impl FileDiff {
+    fn new(file_name: String) -> Self {
+        FileDiff {
+            file_name,
+            chunks: Vec::new(),
+        }
+    }
+
+    fn add_chunk(&mut self, chunk: DiffChunk) {
+        self.chunks.push(chunk);
+    }
+}
+
+
 // Function to compare two files line by line using the naive algorithm
 pub fn compare_files(file1: &str, file2: &str) -> Result<(), std::io::Error> {
     // Implement your naive line-by-line comparison here
