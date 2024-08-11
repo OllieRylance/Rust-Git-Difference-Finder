@@ -155,62 +155,6 @@ pub fn compare_files(file1: &str, file2: &str) -> Result<FileDiff, std::io::Erro
                 dp[i][j + 1] = 9;
             }
         }
-
-        // if i > 0 && j > 0 && lines1[i - 1] == lines2[j - 1] {
-        //     // If the current lines match in both files, it's part of the LCS
-        //     // and not a difference. If there is a current chunk of changes,
-        //     // finalize it and start a new chunk.
-        //     if !current_chunk.changes.is_empty() {
-        //         diff.add_chunk(current_chunk);
-        //         current_chunk = DiffChunk {
-        //             diff_type: DiffType::Modification, // Reset to placeholder
-        //             changes: Vec::new(),
-        //         };
-        //     }
-        //     // Move diagonally in the dp table (match in both files)
-        //     i -= 1;
-        //     j -= 1;
-        // } else if i > 0 && (j == 0 || dp[i - 1][j] >= dp[i][j - 1]) {
-        //     // If no match and moving up in the dp table is optimal, it means
-        //     // a line was deleted from file1.
-        //     if current_chunk.diff_type != DiffType::Deletion {
-        //         // If the current chunk is not a deletion, start a new deletion chunk
-        //         if !current_chunk.changes.is_empty() {
-        //             diff.add_chunk(current_chunk);
-        //         }
-        //         current_chunk = DiffChunk {
-        //             diff_type: DiffType::Deletion,
-        //             changes: Vec::new(),
-        //         };
-        //     }
-        //
-        //     // If the current chunk is a deletion, add the line to the current chunk
-        //     current_chunk.changes.push(LineChange {
-        //         line_number: i, // Line number in file1
-        //         content: lines1[i - 1].clone(), // The deleted content
-        //     });
-        //     i -= 1;
-        // } else if j > 0 {
-        //     // Otherwise, we move left in the dp table, indicating an addition
-        //     // in file2.
-        //     if current_chunk.diff_type != DiffType::Addition {
-        //         // If the current chunk is not an addition, start a new addition chunk
-        //         if !current_chunk.changes.is_empty() {
-        //             diff.add_chunk(current_chunk);
-        //         }
-        //         current_chunk = DiffChunk {
-        //             diff_type: DiffType::Addition,
-        //             changes: Vec::new(),
-        //         };
-        //     }
-        //
-        //     // If the current chunk is an addition, add the line to the current chunk
-        //     current_chunk.changes.push(LineChange {
-        //         line_number: j, // Line number in file2
-        //         content: lines2[j - 1].clone(), // The added content
-        //     });
-        //     j -= 1;
-        // }
     }
 
     // Display the dp table for debugging
