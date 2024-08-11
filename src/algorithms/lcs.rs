@@ -3,6 +3,7 @@ use crate::service::dataTypes::{DiffChunk, DiffType, FileDiff, LineChange};
 use crate::service::inputOutput::read_file_lines;
 
 pub fn compare_files(file1: &str, file2: &str) -> Result<FileDiff, std::io::Error> {
+    let debug = false;
 
     // Read lines from both files into vectors of strings
     let lines1 = read_file_lines(file1)?;
@@ -31,11 +32,12 @@ pub fn compare_files(file1: &str, file2: &str) -> Result<FileDiff, std::io::Erro
         }
     }
 
-    // Display the dp table for debugging
-    for row in &dp {
-        println!("{:?}", row);
+    if debug {
+        // Display the dp table for debugging
+        for row in &dp {
+            println!("{:?}", row);
+        }
     }
-
 
     // Create a new FileDiff to store the result, using the name of file2
     let mut diff = FileDiff::new(file2.to_string());
@@ -71,7 +73,7 @@ pub fn compare_files(file1: &str, file2: &str) -> Result<FileDiff, std::io::Erro
             });
             j -= 1;
 
-            dp[i][j + 1] = 9;
+            dp[i][j + 1] = -1;
         } else if j == 0 {
             // If we have reached the beginning of file2, add the remaining lines in file1 as deletions
             if current_chunk.diff_type != DiffType::Deletion {
@@ -90,7 +92,7 @@ pub fn compare_files(file1: &str, file2: &str) -> Result<FileDiff, std::io::Erro
             });
             i -= 1;
 
-            dp[i + 1][j] = 9;
+            dp[i + 1][j] = -1;
         } else if dp[i][j] != max(dp[i][j-1], dp[i-1][j]) {
             // If the current lines are the optimal match in both files, it's
             // part of the LCS and not a difference. If there is a current
@@ -106,7 +108,7 @@ pub fn compare_files(file1: &str, file2: &str) -> Result<FileDiff, std::io::Erro
             i -= 1;
             j -= 1;
 
-            dp[i + 1][j + 1] = 9;
+            dp[i + 1][j + 1] = -1;
         } else {
             if dp[i][j-1] < dp[i-1][j] {
                 // If moving up in the dp table is optimal, it means a line was
@@ -129,7 +131,7 @@ pub fn compare_files(file1: &str, file2: &str) -> Result<FileDiff, std::io::Erro
                 });
                 i -= 1;
 
-                dp[i + 1][j] = 9;
+                dp[i + 1][j] = -1;
             } else {
                 // Otherwise, we move left in the dp table, indicating an addition
                 // in file2.
@@ -152,15 +154,18 @@ pub fn compare_files(file1: &str, file2: &str) -> Result<FileDiff, std::io::Erro
                 j -= 1;
 
                 // For debugging leave a mark in the dp
-                dp[i][j + 1] = 9;
+                dp[i][j + 1] = -1;
             }
         }
     }
 
-    // Display the dp table for debugging
-    for row in &dp {
-        println!("{:?}", row);
+    if debug {
+        // Display the dp table for debugging
+        for row in &dp {
+            println!("{:?}", row);
+        }
     }
+
 
     // After backtracking, if there's an unfinished chunk of changes,
     // add it to the final diff.
