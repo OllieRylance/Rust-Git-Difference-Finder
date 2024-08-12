@@ -7,7 +7,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Define paths to the test files and whether to use them
     let base_path = "src/test_files/";
     let useEnglish = true;
-    let usePython = true;
+    let usePython = false;
 
     // Store the file paths and whether to use them in a vector
     let files = vec![
